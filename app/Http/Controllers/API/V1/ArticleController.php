@@ -96,4 +96,46 @@ class ArticleController extends Controller
         }
 
     }
+
+    // Update Article
+    public function update(Request $request, $id)
+    {
+        $article = Article::find($id);
+
+        if (!$article) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Article Not Found.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator->errors()]);
+        }
+
+        try {
+            $article->update([
+                'title' => $request->title,
+                'content' => $request->content,
+            ]);
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => 'Update Article Success.',
+                'data' => $article
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Update Article Error : ' . $e->getMessage());
+
+            return response()->json([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Update Article Failed!',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
