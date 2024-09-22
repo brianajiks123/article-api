@@ -24,7 +24,13 @@ class ArticleController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'List Articles',
-            'data' => $articles
+            'data' => $articles->map(function($article) {
+                return [
+                    'title' => $article->title,
+                    'content' => $article->content,
+                    'publish_date' => $article->publish_date
+                ];
+            })
         ], Response::HTTP_OK);
     }
 }
