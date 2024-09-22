@@ -126,7 +126,7 @@ class ArticleController extends Controller
 
             return response()->json([
                 'status' => Response::HTTP_OK,
-                'message' => 'Update Article Success.',
+                'message' => "Update Article with id {$id} Success.",
                 'data' => $article
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -135,6 +135,35 @@ class ArticleController extends Controller
             return response()->json([
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Update Article Failed!',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Delete Article
+    public function destroy($id)
+    {
+        $article = Article::find($id);
+
+        if (!$article) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Article Not Found.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $article->delete();
+
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'message' => "Delete Article with id {$id} Success.",
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Delete Article Error : ' . $e->getMessage());
+
+            return response()->json([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Delete Article Failed!',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
