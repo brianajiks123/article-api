@@ -5,15 +5,26 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ArticleController extends Controller
 {
     //
     public function index()
     {
+        $articles = Article::latest('publish_date')->get();
+
+        if ($articles->isEmpty()) {
+            return response()->json([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Article Empty.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         return response()->json([
+            'status' => Response::HTTP_OK,
             'message' => 'List Articles',
-            'data' => Article::latest()->get()
-        ]);
+            'data' => $articles
+        ], Response::HTTP_OK);
     }
 }
