@@ -11,4 +11,5 @@ Route::get('/user', function (Request $request) {
 // Articles v1
 Route::prefix('v1')->group(function() {
     Route::get('articles', [ArticleController::class,'index']);
+    Route::post('store-article', [ArticleController::class,'store']);
 });
